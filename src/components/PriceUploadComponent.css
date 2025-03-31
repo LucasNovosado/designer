@@ -1,0 +1,199 @@
+/* src/components/PriceUploadComponent.css */
+
+.price-upload-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .upload-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .state-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .state-selector label {
+    color: #b3b3b3;
+    font-weight: 500;
+    min-width: 70px;
+  }
+  
+  .state-selector select {
+    padding: 0.5rem;
+    border-radius: 6px;
+    background-color: #252525;
+    color: #e0e0e0;
+    border: 1px solid #333;
+    flex: 1;
+  }
+  
+  .state-selector select:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  }
+  
+  .upload-button-container {
+    display: flex;
+    align-items: center;
+    margin-top: 0.5rem;
+  }
+  
+  .upload-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(90deg, #3498db, #2980b9);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+    box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .upload-button:hover {
+    background: linear-gradient(90deg, #3498db, #2c3e50);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.4);
+  }
+  
+  .upload-button.disabled {
+    background: #666;
+    cursor: not-allowed;
+    opacity: 0.7;
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .excel-icon {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M14,2H6C4.9,2,4,2.9,4,4v16c0,1.1,0.9,2,2,2h12c1.1,0,2-0.9,2-2V8L14,2z M15,11h-4v1h4v5h-4v1h4v2H9V5h6V11z'/%3E%3C/svg%3E");
+    background-size: contain;
+  }
+  
+  input[type="file"] {
+    display: none;
+  }
+  
+  .upload-status {
+    margin-top: 1rem;
+    padding: 0.5rem;
+    background-color: #252525;
+    border-radius: 6px;
+    border: 1px solid #333;
+  }
+  
+  .upload-status p {
+    color: #e0e0e0;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .progress-bar {
+    height: 6px;
+    background-color: #333;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 0.3rem;
+  }
+  
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ffd100, #3498db);
+    transition: width 0.3s ease;
+  }
+  
+  .confirm-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background-color: #1e1e1e;
+    border-radius: 12px;
+    padding: 1.5rem;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    border: 1px solid #333;
+  }
+  
+  .modal-content h3 {
+    color: #ffd100;
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+  
+  .modal-content p {
+    color: #e0e0e0;
+    margin-bottom: 0.75rem;
+  }
+  
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  
+  .confirm-button {
+    background: linear-gradient(90deg, #3498db, #2980b9);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  
+  .confirm-button:hover {
+    background: linear-gradient(90deg, #3498db, #2c3e50);
+    transform: translateY(-2px);
+  }
+  
+  .cancel-button {
+    background-color: #444;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  
+  .cancel-button:hover {
+    background-color: #666;
+  }
+  
+  /* Estilos específicos para quando o componente está dentro do card do dashboard */
+  .dashboard-card .price-upload-container {
+    padding: 0;
+    box-shadow: none;
+    background-color: transparent;
+    border: none;
+  }
+  
+  .price-upload-card {
+    min-height: 200px;
+  }

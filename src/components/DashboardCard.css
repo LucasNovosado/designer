@@ -1,0 +1,55 @@
+/* src/components/DashboardCard.css */
+
+.dashboard-card {
+    padding: 2rem;
+    background-color: #1e1e1e;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 1px solid #333;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+    border: 1px solid #444;
+  }
+  
+  .dashboard-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, #ffd100, #3498db);
+  }
+  
+  .dashboard-card h3 {
+    margin-top: 0;
+    color: #ffd100;
+    border-bottom: 1px solid #333;
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  
+  .dashboard-card p {
+    color: #b3b3b3;
+    margin: 0.7rem 0;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .dashboard-card p strong {
+    color: #e0e0e0;
+  }
+  
+  /* Estilo específico para valores destacados */
+  .dashboard-card .highlight {
+    color: #ffd100;
+    font-weight: 600;
+  }
