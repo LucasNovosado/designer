@@ -1,6 +1,6 @@
 // src/services/parseService.js
 
-import Parse from 'parse/dist/parse.min.js';
+import Parse from 'parse';
 
 // Variável para controlar se já foi inicializado
 let initialized = false;
