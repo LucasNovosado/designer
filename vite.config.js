@@ -33,16 +33,23 @@ export default defineConfig(({ mode }) => {
       ]
     },
     define: {
-      // Configuração para variáveis de ambiente
-      '__APP_CONFIG__': JSON.stringify({
-        PARSE_APP_ID: env.VITE_PARSE_APP_ID,
-        PARSE_JS_KEY: env.VITE_PARSE_JS_KEY,
-        PARSE_SERVER_URL: env.VITE_PARSE_SERVER_URL
-      })
+      'process.env': {},
+      'import.meta.env.VITE_PARSE_APP_ID': JSON.stringify(env.VITE_PARSE_APP_ID),
+      'import.meta.env.VITE_PARSE_JS_KEY': JSON.stringify(env.VITE_PARSE_JS_KEY),
+      'import.meta.env.VITE_PARSE_SERVER_URL': JSON.stringify(env.VITE_PARSE_SERVER_URL),
+      'import.meta.env.VITE_PARSE_MASTER_KEY': JSON.stringify(env.VITE_PARSE_MASTER_KEY)
     },
     build: {
       outDir: 'dist',
-      sourcemap: false
+      sourcemap: false,
+      // Configuração adicional para melhorar a compatibilidade
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ['react', 'react-dom', 'react-router-dom', 'parse']
+          }
+        }
+      }
     }
   }
 })
