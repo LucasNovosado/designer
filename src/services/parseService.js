@@ -1,83 +1,56 @@
 // src/services/parseService.js
-
 import Parse from 'parse';
-
-// Variável para controlar se já foi inicializado
-let initialized = false;
-
-/**
- * Inicializa o Parse uma única vez
- * @returns {boolean} - Se a inicialização foi bem-sucedida
- */
-const initializeParse = () => {
-  // Se já tiver sido inicializado, retorna verdadeiro
-  if (initialized || Parse.applicationId) {
-    console.log('Parse já inicializado:', Parse.applicationId);
-    return true;
-  }
-  
-  try {
-    console.log('Inicializando Parse...');
-    
-    // Obtém as variáveis de ambiente
-    const appId = import.meta.env.VITE_PARSE_APP_ID;
-    const jsKey = import.meta.env.VITE_PARSE_JS_KEY;
-    const serverURL = import.meta.env.VITE_PARSE_SERVER_URL;
-    
-    if (!appId || !jsKey || !serverURL) {
-      console.error('Variáveis de ambiente do Parse não encontradas');
-      return false;
-    }
-    
-    // Inicializa o Parse
-    Parse.initialize(appId, jsKey);
-    Parse.serverURL = serverURL;
-    
-    // Marca como inicializado
-    initialized = true;
-    
-    console.log('Parse inicializado com sucesso:', Parse.applicationId);
-    return true;
-  } catch (error) {
-    console.error('Erro ao inicializar Parse:', error);
-    return false;
-  }
-};
 
 /**
  * Serviço centralizado para operações do Parse
  */
 const parseService = {
-  // Inicializa o Parse
-  initialize: initializeParse,
+  // Verifica se está inicializado
+  isInitialized: () => {
+    const initialized = !!Parse.applicationId;
+    console.log('Parse inicializado?', initialized);
+    return initialized;
+  },
+  
+  // Inicializa o Parse (agora apenas verifica - não inicializa)
+  initialize: () => {
+    // Verificar apenas, não inicializar - deixamos isso para o ParseContext
+    const initialized = !!Parse.applicationId;
+    console.log('Verificando inicialização do Parse em parseService:', initialized);
+    return initialized;
+  },
   
   // Retorna a referência do Parse
   getParseInstance: () => {
-    initializeParse();
     return Parse;
-  },
-  
-  // Verifica se está inicializado
-  isInitialized: () => {
-    return initialized && !!Parse.applicationId;
   },
   
   // Obtém uma classe do Parse
   getClass: (className) => {
-    initializeParse();
+    if (!Parse.applicationId) {
+      console.error(`Parse não inicializado ao tentar obter classe ${className}`);
+      throw new Error('Sistema não inicializado corretamente');
+    }
     return Parse.Object.extend(className);
   },
   
   // Cria uma query para uma classe
   createQuery: (className) => {
-    initializeParse();
+    if (!Parse.applicationId) {
+      console.error(`Parse não inicializado ao tentar criar query para ${className}`);
+      throw new Error('Sistema não inicializado corretamente');
+    }
     const ParseClass = Parse.Object.extend(className);
     return new Parse.Query(ParseClass);
   },
   
   // Salva um objeto no Parse
   saveObject: async (className, data) => {
-    initializeParse();
+    if (!Parse.applicationId) {
+      console.error(`Parse não inicializado ao tentar salvar objeto em ${className}`);
+      throw new Error('Sistema não inicializado corretamente');
+    }
+    
     const ParseClass = Parse.Object.extend(className);
     const object = new ParseClass();
     
@@ -91,7 +64,11 @@ const parseService = {
   
   // Salva vários objetos no Parse
   saveObjects: async (className, dataArray) => {
-    initializeParse();
+    if (!Parse.applicationId) {
+      console.error(`Parse não inicializado ao tentar salvar objetos em ${className}`);
+      throw new Error('Sistema não inicializado corretamente');
+    }
+    
     const ParseClass = Parse.Object.extend(className);
     
     const objects = dataArray.map(data => {
@@ -110,13 +87,21 @@ const parseService = {
   
   // Deleta objetos do Parse
   deleteObjects: async (objects) => {
-    initializeParse();
+    if (!Parse.applicationId) {
+      console.error('Parse não inicializado ao tentar deletar objetos');
+      throw new Error('Sistema não inicializado corretamente');
+    }
+    
     return await Parse.Object.destroyAll(objects);
   },
   
   // Encontra objetos por uma query
   findObjects: async (className, constraints = {}) => {
-    initializeParse();
+    if (!Parse.applicationId) {
+      console.error(`Parse não inicializado ao tentar buscar objetos em ${className}`);
+      throw new Error('Sistema não inicializado corretamente');
+    }
+    
     const query = parseService.createQuery(className);
     
     // Aplica as restrições
@@ -135,7 +120,11 @@ const parseService = {
   
   // Conta objetos por uma query
   countObjects: async (className, constraints = {}) => {
-    initializeParse();
+    if (!Parse.applicationId) {
+      console.error(`Parse não inicializado ao tentar contar objetos em ${className}`);
+      throw new Error('Sistema não inicializado corretamente');
+    }
+    
     const query = parseService.createQuery(className);
     
     // Aplica as restrições
@@ -150,8 +139,5 @@ const parseService = {
     return await query.count();
   }
 };
-
-// Inicializa o Parse ao importar o serviço
-initializeParse();
 
 export default parseService;
