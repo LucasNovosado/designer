@@ -1,4 +1,4 @@
-import Parse from 'parse/dist/parse.min.js';
+import Parse from 'parse';
 
 /**
  * Inicializa o Parse se ainda não estiver inicializado
