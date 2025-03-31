@@ -1,5 +1,3 @@
-// src/context/ParseContext.jsx
-
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import Parse from 'parse';
 
@@ -21,6 +19,13 @@ export const ParseProvider = ({ children }) => {
       try {
         setIsLoading(true);
         
+        // Log detalhado das variáveis de ambiente
+        console.log('Variáveis de ambiente:', {
+          appId: import.meta.env.VITE_PARSE_APP_ID,
+          jsKey: import.meta.env.VITE_PARSE_JS_KEY ? '[PRESENTE]' : '[AUSENTE]',
+          serverURL: import.meta.env.VITE_PARSE_SERVER_URL
+        });
+        
         // Verificar se já está inicializado
         if (Parse.applicationId) {
           console.log('Parse já inicializado em ParseContext');
@@ -37,14 +42,26 @@ export const ParseProvider = ({ children }) => {
         
         // Verificar se as variáveis existem
         if (!appId || !jsKey || !serverURL) {
-          throw new Error('Variáveis de ambiente do Parse não encontradas');
+          throw new Error('Variáveis de ambiente do Parse incompletas: ' + 
+            JSON.stringify({
+              appId: !!appId, 
+              jsKey: !!jsKey, 
+              serverURL: !!serverURL
+            }));
         }
         
         // Inicializar o Parse
+        console.log('Tentando inicializar Parse...');
         Parse.initialize(appId, jsKey);
         Parse.serverURL = serverURL;
         
         // Verificar se inicializou
+        console.log('Parse após inicialização:', {
+          applicationId: Parse.applicationId,
+          serverURL: Parse.serverURL,
+          javascriptKey: Parse._getJSKey()
+        });
+
         if (Parse.applicationId) {
           console.log('Parse inicializado com sucesso em ParseContext');
           setIsInitialized(true);
@@ -53,8 +70,12 @@ export const ParseProvider = ({ children }) => {
           throw new Error('Parse não inicializado corretamente');
         }
       } catch (err) {
-        console.error('Erro ao inicializar Parse:', err);
-        setError(err.message);
+        console.error('Erro detalhado ao inicializar Parse:', {
+          message: err.message,
+          stack: err.stack,
+          name: err.name
+        });
+        setError(err.message || 'Erro desconhecido na inicialização');
         setIsInitialized(false);
       } finally {
         setIsLoading(false);
