@@ -1,35 +1,5 @@
+// src/services/authService.js
 import Parse from 'parse';
-
-/**
- * Inicializa o Parse se ainda não estiver inicializado
- * @returns {boolean} - Se a inicialização foi bem-sucedida
- */
-const ensureParseInitialized = () => {
-  if (Parse.applicationId) {
-    return true;
-  }
-  
-  try {
-    if (!import.meta.env.VITE_PARSE_APP_ID || 
-        !import.meta.env.VITE_PARSE_JS_KEY || 
-        !import.meta.env.VITE_PARSE_SERVER_URL) {
-      console.error('Variáveis de ambiente do Parse não encontradas');
-      return false;
-    }
-    
-    Parse.initialize(
-      import.meta.env.VITE_PARSE_APP_ID,
-      import.meta.env.VITE_PARSE_JS_KEY
-    );
-    Parse.serverURL = import.meta.env.VITE_PARSE_SERVER_URL;
-    
-    console.log('Parse inicializado com sucesso em authService');
-    return !!Parse.applicationId;
-  } catch (error) {
-    console.error('Erro ao inicializar Parse em authService:', error);
-    return false;
-  }
-};
 
 /**
  * Serviço de autenticação que contém métodos para login, logout, etc.
@@ -43,12 +13,17 @@ const authService = {
    */
   login: async (username, password) => {
     try {
-      // Verifica se o Parse está inicializado
-      if (!ensureParseInitialized()) {
-        throw new Error('Parse não inicializado corretamente');
+      console.log('Tentativa de login para:', username);
+      
+      // Verificar se o Parse está inicializado
+      if (!Parse.applicationId) {
+        console.error('Parse não inicializado durante tentativa de login');
+        throw new Error('Sistema não inicializado corretamente. Tente recarregar a página.');
       }
       
+      console.log('Tentando login no Parse...');
       const user = await Parse.User.logIn(username, password);
+      console.log('Login bem-sucedido para:', username);
       return user;
     } catch (error) {
       console.error('Erro ao fazer login:', error);
@@ -62,13 +37,15 @@ const authService = {
    */
   logout: async () => {
     try {
-      // Verifica se o Parse está inicializado
-      if (!ensureParseInitialized()) {
+      // Verificar se o Parse está inicializado
+      if (!Parse.applicationId) {
         console.error('Parse não inicializado. Não é possível fazer logout');
         return false;
       }
       
+      console.log('Realizando logout do usuário');
       await Parse.User.logOut();
+      console.log('Logout realizado com sucesso');
       return true;
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
@@ -82,13 +59,15 @@ const authService = {
    */
   getCurrentUser: () => {
     try {
-      // Verifica se o Parse está inicializado
-      if (!ensureParseInitialized()) {
+      // Verificar se o Parse está inicializado
+      if (!Parse.applicationId) {
         console.error('Parse não inicializado no getCurrentUser. Retornando null.');
         return null;
       }
       
-      return Parse.User.current();
+      const currentUser = Parse.User.current();
+      console.log('Usuário atual verificado:', currentUser ? currentUser.getUsername() : 'Nenhum');
+      return currentUser;
     } catch (error) {
       console.error('Erro ao verificar usuário atual:', error);
       return null;
@@ -104,17 +83,20 @@ const authService = {
    */
   register: async (username, password, email) => {
     try {
-      // Verifica se o Parse está inicializado
-      if (!ensureParseInitialized()) {
-        throw new Error('Parse não inicializado corretamente');
+      // Verificar se o Parse está inicializado
+      if (!Parse.applicationId) {
+        console.error('Parse não inicializado na tentativa de registro');
+        throw new Error('Sistema não inicializado corretamente');
       }
       
+      console.log('Registrando novo usuário:', username);
       const user = new Parse.User();
       user.set("username", username);
       user.set("password", password);
       user.set("email", email);
       
       const newUser = await user.signUp();
+      console.log('Usuário registrado com sucesso');
       return newUser;
     } catch (error) {
       console.error('Erro ao registrar usuário:', error);
@@ -128,12 +110,17 @@ const authService = {
    */
   checkConnection: async () => {
     try {
-      if (!ensureParseInitialized()) {
+      if (!Parse.applicationId) {
+        console.error('Parse não inicializado na verificação de conexão');
         return false;
       }
       
+      console.log('Verificando conexão com o Parse');
       // Tenta fazer uma operação simples para testar a conexão
-      await Parse.Cloud.run('ping', {});
+      const TestObject = Parse.Object.extend('Prices');
+      const query = new Parse.Query(TestObject);
+      await query.count();
+      console.log('Conexão com Parse verificada com sucesso');
       return true;
     } catch (error) {
       console.error('Erro ao verificar conexão com o Parse:', error);
