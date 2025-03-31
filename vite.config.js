@@ -5,6 +5,12 @@ import react from '@vitejs/plugin-react'
 export default defineConfig(({ mode }) => {
   // Carrega as variáveis de ambiente
   const env = loadEnv(mode, process.cwd(), '')
+  
+  console.log('Variáveis de ambiente carregadas:', {
+    PARSE_APP_ID: !!env.VITE_PARSE_APP_ID,
+    PARSE_JS_KEY: !!env.VITE_PARSE_JS_KEY,
+    PARSE_SERVER_URL: !!env.VITE_PARSE_SERVER_URL
+  })
 
   return {
     plugins: [react()],
@@ -34,15 +40,14 @@ export default defineConfig(({ mode }) => {
     },
     define: {
       'process.env': {},
-      'import.meta.env.VITE_PARSE_APP_ID': JSON.stringify(env.VITE_PARSE_APP_ID),
-      'import.meta.env.VITE_PARSE_JS_KEY': JSON.stringify(env.VITE_PARSE_JS_KEY),
-      'import.meta.env.VITE_PARSE_SERVER_URL': JSON.stringify(env.VITE_PARSE_SERVER_URL),
-      'import.meta.env.VITE_PARSE_MASTER_KEY': JSON.stringify(env.VITE_PARSE_MASTER_KEY)
+      'import.meta.env.VITE_PARSE_APP_ID': JSON.stringify(env.VITE_PARSE_APP_ID || ''),
+      'import.meta.env.VITE_PARSE_JS_KEY': JSON.stringify(env.VITE_PARSE_JS_KEY || ''),
+      'import.meta.env.VITE_PARSE_SERVER_URL': JSON.stringify(env.VITE_PARSE_SERVER_URL || ''),
+      'import.meta.env.VITE_PARSE_MASTER_KEY': JSON.stringify(env.VITE_PARSE_MASTER_KEY || '')
     },
     build: {
       outDir: 'dist',
-      sourcemap: false,
-      // Configuração adicional para melhorar a compatibilidade
+      sourcemap: true, // Habilitar sourcemaps para depuração
       rollupOptions: {
         output: {
           manualChunks: {
