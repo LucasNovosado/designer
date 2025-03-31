@@ -1,7 +1,7 @@
 // src/context/ParseContext.jsx
 
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import Parse from 'parse';
+import Parse, { initializeParse } from '../services/parseInitializer';
 
 // Criar contexto
 const ParseContext = createContext(null);
