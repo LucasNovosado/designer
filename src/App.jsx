@@ -7,6 +7,9 @@ import { ParseProvider, useParse } from './context/ParseContext';
 const AppContent = () => {
   const { isInitialized, isLoading, error, reinitialize } = useParse();
 
+  // Log adicional para depuração
+  console.log('Estado do Parse em AppContent:', { isInitialized, isLoading, error });
+
   // Mostra tela de carregamento enquanto o Parse está inicializando
   if (isLoading) {
     return (
@@ -80,7 +83,14 @@ const AppContent = () => {
           <h3 style={{ color: '#ffd100', marginTop: '0' }}>Erro: Sistema não inicializado corretamente</h3>
           <p>Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente.</p>
           {error && (
-            <p style={{ fontSize: '0.8rem', color: '#999', marginTop: '1rem' }}>{error}</p>
+            <div>
+              <p style={{ fontSize: '0.9rem', color: '#ff6b6b', marginTop: '1rem', backgroundColor: 'rgba(255,0,0,0.1)', padding: '10px', borderRadius: '5px' }}>
+                Detalhes do erro: {error}
+              </p>
+              <p style={{ fontSize: '0.8rem', color: '#999' }}>
+                Verifique se as variáveis de ambiente estão configuradas corretamente.
+              </p>
+            </div>
           )}
           
           <button 
@@ -114,6 +124,8 @@ const AppContent = () => {
 
 // Componente principal que envolve tudo com o provedor de Parse
 const App = () => {
+  console.log('Inicializando App com ParseProvider');
+  
   return (
     <ParseProvider>
       <AppContent />
