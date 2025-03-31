@@ -1,3 +1,4 @@
+// Modificação no ParseContext.jsx
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import Parse from 'parse';
 
@@ -19,13 +20,6 @@ export const ParseProvider = ({ children }) => {
       try {
         setIsLoading(true);
         
-        // Log detalhado das variáveis de ambiente
-        console.log('Variáveis de ambiente:', {
-          appId: import.meta.env.VITE_PARSE_APP_ID,
-          jsKey: import.meta.env.VITE_PARSE_JS_KEY ? '[PRESENTE]' : '[AUSENTE]',
-          serverURL: import.meta.env.VITE_PARSE_SERVER_URL
-        });
-        
         // Verificar se já está inicializado
         if (Parse.applicationId) {
           console.log('Parse já inicializado em ParseContext');
@@ -40,41 +34,36 @@ export const ParseProvider = ({ children }) => {
         const jsKey = import.meta.env.VITE_PARSE_JS_KEY;
         const serverURL = import.meta.env.VITE_PARSE_SERVER_URL;
         
+        console.log('Tentando inicializar Parse com:', { 
+          appId: !!appId, 
+          jsKey: !!jsKey, 
+          serverURL: !!serverURL 
+        });
+        
         // Verificar se as variáveis existem
         if (!appId || !jsKey || !serverURL) {
-          throw new Error('Variáveis de ambiente do Parse incompletas: ' + 
-            JSON.stringify({
-              appId: !!appId, 
-              jsKey: !!jsKey, 
-              serverURL: !!serverURL
-            }));
+          throw new Error('Variáveis de ambiente do Parse incompletas');
         }
         
         // Inicializar o Parse
-        console.log('Tentando inicializar Parse...');
         Parse.initialize(appId, jsKey);
         Parse.serverURL = serverURL;
         
-        // Verificar se inicializou
-        console.log('Parse após inicialização:', {
-          applicationId: Parse.applicationId,
-          serverURL: Parse.serverURL,
-          javascriptKey: Parse._getJSKey()
-        });
-
-        if (Parse.applicationId) {
-          console.log('Parse inicializado com sucesso em ParseContext');
-          setIsInitialized(true);
-          setError(null);
-        } else {
-          throw new Error('Parse não inicializado corretamente');
+        // Testar a conexão
+        try {
+          // Verificar se inicializou
+          if (Parse.applicationId) {
+            console.log('Parse inicializado com sucesso em ParseContext');
+            setIsInitialized(true);
+            setError(null);
+          } else {
+            throw new Error('Parse não inicializado corretamente');
+          }
+        } catch (testError) {
+          throw new Error(`Erro ao testar conexão: ${testError.message}`);
         }
       } catch (err) {
-        console.error('Erro detalhado ao inicializar Parse:', {
-          message: err.message,
-          stack: err.stack,
-          name: err.name
-        });
+        console.error('Erro ao inicializar Parse:', err);
         setError(err.message || 'Erro desconhecido na inicialização');
         setIsInitialized(false);
       } finally {
